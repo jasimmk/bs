@@ -1,13 +1,12 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-
 import csv
-import unittest
-from datetime import datetime
-from dateutil.relativedelta import relativedelta
+
 import getopt
 import random
 import sys
+import unittest
+
 
 class StockException(Exception):
     """
@@ -77,6 +76,7 @@ class Stock(object):
     def print_highest(self):
 
         self.find_highest()
+        print "\n"
         print "{0:=^60}".format("=")
         print "%-15s %10s %20s" %("Company","Highest Price","Year and Month")
         print "{0:=^60}".format("=")
@@ -93,67 +93,10 @@ class Stock(object):
             print "{0:=^60}".format("=")
         return True
 
-class TestStock(unittest.TestCase):
-    """
-    Unittests for the Stock Class
-    """
 
-    def setUp(self):
-        self.fp = 'data2.csv'
-        self.no_companies = 10
-        self.generate_csv()
-
-    def tearDown(self):
-        try:
-            #os.remove('data2.csv')
-            pass
-        except:
-            pass
-    def month_iterator(self, from_date = "01/01/1990", to_date = "01/10/2013"):
-        """
-
-        """
-        current_month = datetime.strptime(from_date,"%d/%m/%Y")
-        to_month = datetime.strptime(to_date,"%d/%m/%Y")   
-
-        while current_month <= to_month:
-            yield current_month
-            current_month = current_month + relativedelta(months = +1 )
-
-        return
-
-    def generate_csv(self):
-
-        with open(self.fp,'wb') as csvfile:
-            
-            datawriter = csv.writer(csvfile, delimiter =',', quotechar='"')
-            header = list(["year","month"])
-            for icompany in xrange(self.no_companies):
-                header.append('Company_%s'%icompany) 
-                
-            datawriter.writerow(header)
-
-            for i in self.month_iterator('01/01/1990','01/10/2013'):
-                row = [i.strftime("%Y"),i.strftime("%b")]
-                for icomp in xrange(self.no_companies):
-                    row.append(random.randint(10,50)*(icomp+1))
-                #print row
-                datawriter.writerow(row)
-
-    def test_success(self):
-        """
-        Generate a CSV File and Test with it
-        """      
-        x = Stock(self.fp)
-        self.assertTrue(x.print_highest)
-        #self.tearDown()
-    def test_exception(self):
-        """
-        Exception Raises if Invalid file name or Invalid formatted CSV Given
-        """
-
-        self.assertRaises(StockException, Stock, 'yaralava.csv')
 if __name__ == '__main__':
+    
+    from unittesthighstock import TestStock    
     
     try:
         fnopt, args = getopt.getopt(sys.argv[1:], "f:t")
